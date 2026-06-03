@@ -3,262 +3,218 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Ateliê dos Olhos · Meu Painel</title>
+<title>Ateliê dos Olhos · Painel</title>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
 <style>
-:root { --gold: #C9A84C; --gold-light: #E8C96A; --dark: #0E0E14; --card: #16161F; --card2: #1E1E2A; --border: #2A2A38; --text: #E8E8F0; --muted: #888898; --green: #2ECC71; --red: #E74C3C; }
+:root { --gold: #C9A84C; --dark: #0E0E14; --card: #16161F; --card2: #1E1E2A; --border: #2A2A38; --text: #E8E8F0; --muted: #888898; --green: #2ECC71; --red: #E74C3C; }
 * { margin:0; padding:0; box-sizing:border-box; }
 body { background: var(--dark); color: var(--text); font-family: 'DM Sans', sans-serif; min-height: 100vh; }
 body::before { content:''; position:fixed; inset:0; background: radial-gradient(ellipse 80% 50% at 20% -10%, rgba(201,168,76,0.08) 0%, transparent 60%), radial-gradient(ellipse 60% 40% at 80% 110%, rgba(201,168,76,0.05) 0%, transparent 60%); pointer-events:none; z-index:0; }
 .wrap { position:relative; z-index:1; max-width:480px; margin:0 auto; padding:0 20px; }
-#login-screen { display:flex; flex-direction:column; align-items:center; justify-content:center; min-height:100vh; gap:32px; }
+#login { display:flex; flex-direction:column; align-items:center; justify-content:center; min-height:100vh; gap:32px; }
 .brand { text-align:center; }
 .brand-eyebrow { font-size:10px; letter-spacing:4px; text-transform:uppercase; color:var(--gold); margin-bottom:8px; }
-.brand-name { font-family:'Playfair Display', serif; font-size:32px; font-weight:900; color:var(--text); line-height:1; }
-.brand-sub { font-size:12px; color:var(--muted); margin-top:6px; letter-spacing:1px; }
-.gold-divider { width:60px; height:2px; background:linear-gradient(90deg, transparent, var(--gold), transparent); margin:0 auto; }
-.login-card { background:var(--card); border:1px solid var(--border); border-radius:20px; padding:32px 28px; width:100%; }
-.login-card h2 { font-family:'Playfair Display', serif; font-size:20px; margin-bottom:6px; }
-.login-card p { font-size:13px; color:var(--muted); margin-bottom:24px; }
+.brand-name { font-family:'Playfair Display', serif; font-size:32px; font-weight:900; color:var(--text); }
+.brand-sub { font-size:12px; color:var(--muted); margin-top:6px; }
+.card { background:var(--card); border:1px solid var(--border); border-radius:20px; padding:32px 28px; width:100%; }
+.card h2 { font-family:'Playfair Display', serif; font-size:20px; margin-bottom:6px; }
+.card p { font-size:13px; color:var(--muted); margin-bottom:24px; }
 label { display:block; font-size:11px; letter-spacing:1.5px; text-transform:uppercase; color:var(--gold); margin-bottom:8px; }
-input[type=text] { width:100%; padding:14px 16px; background:var(--card2); border:1px solid var(--border); border-radius:12px; color:var(--text); font-family:'DM Sans', sans-serif; font-size:14px; outline:none; transition:border-color .2s; }
-input[type=text]::placeholder { color:var(--muted); }
-input[type=text]:focus { border-color:var(--gold); }
-.btn-primary { width:100%; margin-top:20px; padding:16px; border:none; border-radius:12px; background:linear-gradient(135deg, var(--gold), var(--gold-light)); color:#0E0E14; font-family:'DM Sans', sans-serif; font-size:14px; font-weight:700; letter-spacing:1.5px; text-transform:uppercase; cursor:pointer; transition:transform .15s, opacity .15s; }
-.btn-primary:hover { opacity:.9; transform:translateY(-1px); }
-.btn-primary:disabled { opacity:.5; cursor:not-allowed; }
-.error-msg { margin-top:12px; padding:10px 14px; background:rgba(231,76,60,0.12); border:1px solid rgba(231,76,60,0.3); border-radius:10px; font-size:12px; color:#E74C3C; display:none; }
-.error-msg.show { display:block; }
-.loading-spinner { display:inline-block; width:16px; height:16px; border:2px solid rgba(255,255,255,.3); border-top:2px solid #FFF; border-radius:50%; animation:spin .8s linear infinite; margin-right:8px; }
-@keyframes spin { to { transform:rotate(360deg); } }
-#dashboard { display:none; }
-.top-bar { padding:20px 0 16px; display:flex; align-items:center; justify-content:space-between; }
-.greeting { font-size:11px; letter-spacing:2px; text-transform:uppercase; color:var(--gold); }
-.inf-name { font-family:'Playfair Display', serif; font-size:24px; font-weight:700; }
-.cupom-badge { display:inline-block; margin-top:4px; padding:4px 12px; border-radius:100px; background:rgba(201,168,76,0.12); border:1px solid rgba(201,168,76,0.3); font-size:11px; letter-spacing:2px; color:var(--gold); text-transform:uppercase; }
-.logout-btn { background:none; border:1px solid var(--border); color:var(--muted); border-radius:10px; padding:8px 14px; font-size:11px; cursor:pointer; font-family:'DM Sans', sans-serif; letter-spacing:1px; transition:border-color .2s; }
-.logout-btn:hover { border-color:var(--gold); color:var(--gold); }
-.kpi-grid { display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-bottom:16px; }
-.kpi-card { background:var(--card); border:1px solid var(--border); border-radius:16px; padding:18px 16px; position:relative; overflow:hidden; }
-.kpi-card::before { content:''; position:absolute; top:0; left:0; right:0; height:2px; background:linear-gradient(90deg, transparent, var(--gold), transparent); }
+input { width:100%; padding:14px 16px; background:var(--card2); border:1px solid var(--border); border-radius:12px; color:var(--text); font-family:'DM Sans', sans-serif; font-size:14px; outline:none; }
+input:focus { border-color:var(--gold); }
+.btn { width:100%; margin-top:20px; padding:16px; border:none; border-radius:12px; background:linear-gradient(135deg, var(--gold), #E8C96A); color:#0E0E14; font-family:'DM Sans', sans-serif; font-size:14px; font-weight:700; letter-spacing:1.5px; text-transform:uppercase; cursor:pointer; }
+.btn:disabled { opacity:.5; }
+.err { margin-top:12px; padding:10px 14px; background:rgba(231,76,60,0.12); border:1px solid rgba(231,76,60,0.3); border-radius:10px; font-size:12px; color:#E74C3C; display:none; }
+.err.show { display:block; }
+#dash { display:none; }
+.top { padding:20px 0 16px; display:flex; justify-content:space-between; }
+.name { font-family:'Playfair Display', serif; font-size:24px; font-weight:700; }
+.code { display:inline-block; margin-top:4px; padding:4px 12px; border-radius:100px; background:rgba(201,168,76,0.12); border:1px solid rgba(201,168,76,0.3); font-size:11px; letter-spacing:2px; color:var(--gold); text-transform:uppercase; }
+.kpi { display:grid; grid-template-columns:1fr 1fr; gap:12px; margin:16px 0; }
+.kpi-card { background:var(--card); border:1px solid var(--border); border-radius:16px; padding:18px 16px; }
 .kpi-card.full { grid-column:1/-1; }
-.kpi-label { font-size:10px; letter-spacing:2px; text-transform:uppercase; color:var(--muted); margin-bottom:10px; }
-.kpi-value { font-family:'Playfair Display', serif; font-size:32px; font-weight:700; color:var(--text); line-height:1; }
-.kpi-value.green { color:var(--green); }
-.kpi-value.gold { color:var(--gold); }
-.kpi-sub { font-size:11px; color:var(--muted); margin-top:4px; }
-.conv-bar-wrap { margin-top:12px; background:var(--card2); border-radius:100px; height:8px; overflow:hidden; }
-.conv-bar-fill { height:100%; border-radius:100px; background:linear-gradient(90deg, var(--gold), var(--green)); transition:width 1.2s cubic-bezier(.4,0,.2,1); }
-.section-title { font-size:10px; letter-spacing:3px; text-transform:uppercase; color:var(--gold); margin:24px 0 12px; }
-.timeline { display:flex; flex-direction:column; gap:8px; }
-.visit-item { background:var(--card); border:1px solid var(--border); border-radius:14px; padding:14px 16px; display:flex; align-items:center; gap:12px; }
-.visit-icon { width:36px; height:36px; border-radius:10px; flex-shrink:0; display:flex; align-items:center; justify-content:center; font-size:16px; }
-.visit-icon.won { background:rgba(46,204,113,0.15); }
-.visit-icon.lost { background:rgba(231,76,60,0.12); }
-.visit-info { flex:1; min-width:0; }
-.visit-name { font-size:13px; font-weight:600; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
-.visit-meta { font-size:11px; color:var(--muted); margin-top:2px; }
-.visit-status { font-size:10px; letter-spacing:1px; text-transform:uppercase; padding:4px 10px; border-radius:100px; flex-shrink:0; }
-.visit-status.won { background:rgba(46,204,113,0.15); color:var(--green); }
-.visit-status.lost { background:rgba(231,76,60,0.1); color:var(--red); }
+.label { font-size:10px; letter-spacing:2px; text-transform:uppercase; color:var(--muted); margin-bottom:10px; }
+.value { font-family:'Playfair Display', serif; font-size:32px; font-weight:700; }
+.value.green { color:var(--green); }
+.sub { font-size:11px; color:var(--muted); margin-top:4px; }
+.bar { margin-top:12px; background:var(--card2); border-radius:100px; height:8px; }
+.bar-fill { height:100%; border-radius:100px; background:linear-gradient(90deg, var(--gold), var(--green)); transition:width 1.2s; }
+.title { font-size:10px; letter-spacing:3px; text-transform:uppercase; color:var(--gold); margin:24px 0 12px; }
+.list { display:flex; flex-direction:column; gap:8px; }
+.item { background:var(--card); border:1px solid var(--border); border-radius:14px; padding:14px 16px; display:flex; gap:12px; }
+.icon { width:36px; height:36px; border-radius:10px; flex-shrink:0; display:flex; align-items:center; justify-content:center; font-size:16px; }
+.icon.won { background:rgba(46,204,113,0.15); }
+.icon.lost { background:rgba(231,76,60,0.12); }
+.info { flex:1; }
+.nome { font-size:13px; font-weight:600; }
+.meta { font-size:11px; color:var(--muted); margin-top:2px; }
+.status { font-size:10px; padding:4px 10px; border-radius:100px; flex-shrink:0; }
+.status.won { background:rgba(46,204,113,0.15); color:var(--green); }
+.status.lost { background:rgba(231,76,60,0.1); color:var(--red); }
 .empty { text-align:center; padding:40px 20px; color:var(--muted); font-size:13px; }
-.empty-icon { font-size:32px; margin-bottom:12px; opacity:.5; }
-.footer { text-align:center; margin-top:32px; font-size:10px; color:var(--muted); letter-spacing:1px; }
-.footer span { color:var(--gold); }
+.exit { background:none; border:1px solid var(--border); color:var(--muted); border-radius:10px; padding:8px 14px; font-size:11px; cursor:pointer; }
+.exit:hover { border-color:var(--gold); color:var(--gold); }
 </style>
 </head>
 <body>
 
-<div id="login-screen">
+<div id="login">
   <div class="wrap" style="width:100%">
     <div class="brand">
       <div class="brand-eyebrow">Porto Seguro · BA</div>
       <div class="brand-name">Ateliê dos Olhos</div>
       <div class="brand-sub">Seu Painel de Resultados</div>
     </div>
-    <div class="gold-divider"></div>
-    <div class="login-card">
+    <div style="width:60px; height:2px; background:linear-gradient(90deg, transparent, var(--gold), transparent); margin:0 auto;"></div>
+    <div class="card">
       <h2>Acessar Painel</h2>
       <p>Digite seu código de acesso</p>
-      <label for="codigo-input">Seu código</label>
-      <input type="text" id="codigo-input" placeholder="Digite seu código aqui" autocomplete="off">
-      <button class="btn-primary" onclick="handleLogin()">Acessar meu painel</button>
-      <div class="error-msg" id="error-msg"></div>
-    </div>
-    <div class="footer" style="margin-top:24px">
-      Dúvidas? Fale com a loja via <span>WhatsApp</span>
+      <label>Seu código</label>
+      <input type="text" id="cod" placeholder="Digite seu código aqui" autocomplete="off">
+      <button class="btn" onclick="login()">Acessar meu painel</button>
+      <div class="err" id="err"></div>
     </div>
   </div>
 </div>
 
-<div id="dashboard">
+<div id="dash">
   <div class="wrap">
-    <div class="top-bar">
+    <div class="top">
       <div>
-        <div class="greeting">Olá,</div>
-        <div class="inf-name" id="dash-name">—</div>
-        <div class="cupom-badge" id="dash-cupom">—</div>
+        <div style="font-size:11px; letter-spacing:2px; text-transform:uppercase; color:var(--gold);">Olá,</div>
+        <div class="name" id="n">—</div>
+        <div class="code" id="c">—</div>
       </div>
-      <button class="logout-btn" onclick="handleLogout()">Sair</button>
+      <button class="exit" onclick="logout()">Sair</button>
     </div>
-    <div class="kpi-grid">
+    <div class="kpi">
       <div class="kpi-card">
-        <div class="kpi-label">Indicações</div>
-        <div class="kpi-value gold" id="kpi-visitas">0</div>
-        <div class="kpi-sub">clientes</div>
+        <div class="label">Indicações</div>
+        <div class="value" id="v1">0</div>
+        <div class="sub">clientes</div>
       </div>
       <div class="kpi-card">
-        <div class="kpi-label">Vendas</div>
-        <div class="kpi-value green" id="kpi-vendas">0</div>
-        <div class="kpi-sub">conversões</div>
+        <div class="label">Vendas</div>
+        <div class="value green" id="v2">0</div>
+        <div class="sub">conversões</div>
       </div>
       <div class="kpi-card full">
-        <div class="kpi-label">Taxa de conversão</div>
-        <div class="kpi-value gold" id="kpi-conv">0%</div>
-        <div class="conv-bar-wrap"><div class="conv-bar-fill" id="conv-bar" style="width:0%"></div></div>
+        <div class="label">Taxa de conversão</div>
+        <div class="value" id="v3">0%</div>
+        <div class="bar"><div class="bar-fill" id="b"></div></div>
       </div>
       <div class="kpi-card full">
-        <div class="kpi-label">Seu crédito</div>
-        <div class="kpi-value gold" id="kpi-credito">R$ 0,00</div>
-        <div class="kpi-sub">em comissão</div>
+        <div class="label">Seu crédito</div>
+        <div class="value" id="v4">R$ 0,00</div>
+        <div class="sub">em comissão</div>
       </div>
     </div>
-    <div class="section-title">Histórico</div>
-    <div class="timeline" id="timeline"></div>
-    <div class="footer" style="margin-top:36px">
-      Dados em tempo real <span>Ateliê dos Olhos</span>
-    </div>
+    <div class="title">Histórico</div>
+    <div class="list" id="list"></div>
   </div>
 </div>
 
 <script>
-const SHEET_ID = "1So-Tr9n_wvTTbaxC-mf_CAaJmmO1yi5RLBfysXe6zDY";
-const API_KEY = "AIzaSyCtO6Bw_kNH8g_OlrZgq7aTfTbrEftCujo";
-const INFLUENCIADORES_SHEET = "👤 Influenciadores";
-const VISITAS_PREFIX = "📍 ";
-const VENDAS_SHEET = "📋 Vendas";
+const SHEET = "1So-Tr9n_wvTTbaxC-mf_CAaJmmO1yi5RLBfysXe6zDY";
+const KEY = "AIzaSyCtO6Bw_kNH8g_OlrZgq7aTfTbrEftCujo";
 
-document.getElementById("codigo-input").addEventListener("keydown", e => {
-  if (e.key === "Enter") handleLogin();
+document.getElementById("cod").addEventListener("keydown", e => {
+  if (e.key === "Enter") login();
 });
 
-async function handleLogin() {
-  const codigo = document.getElementById("codigo-input").value.trim().toLowerCase();
-  const btn = event.target;
-  
-  if (!codigo) {
-    showError("Digite seu código");
-    return;
-  }
-
-  btn.disabled = true;
-  btn.innerHTML = '<span class="loading-spinner"></span>Carregando...';
-  clearError();
+async function login() {
+  const cod = document.getElementById("cod").value.trim().toLowerCase();
+  if (!cod) { err("Digite seu código"); return; }
 
   try {
-    const inf = await findInfluenciador(codigo);
-    if (!inf) {
-      showError("Código não encontrado");
-      btn.disabled = false;
-      btn.innerHTML = "Acessar meu painel";
-      return;
-    }
-    await loadDashboard(inf);
-  } catch (err) {
-    showError("Erro ao carregar. Tente novamente");
-    btn.disabled = false;
-    btn.innerHTML = "Acessar meu painel";
+    const inf = await getInf(cod);
+    if (!inf) { err("Código não encontrado"); return; }
+    await showDash(inf);
+  } catch (e) {
+    err("Erro ao carregar");
   }
 }
 
-async function findInfluenciador(codigo) {
-  const url = `https://sheets.googleapis.com/v4/spreadsheets/${SHEET_ID}/values/${INFLUENCIADORES_SHEET}?key=${API_KEY}`;
+async function getInf(cod) {
+  const url = `https://sheets.googleapis.com/v4/spreadsheets/${SHEET}/values/'👤 Influenciadores'?key=${KEY}`;
   const res = await fetch(url);
   if (!res.ok) return null;
   
   const data = await res.json();
   const rows = data.values || [];
-  if (rows.length < 2) return null;
-
-  const h = rows[0];
-  const nIdx = h.indexOf("NOME");
-  const cIdx = h.indexOf("CÓDIGO");
-  const cupIdx = h.indexOf("CUPOM");
-  const dCliIdx = h.indexOf("DESCONTO CLIENTE (%)");
-  const dInfIdx = h.indexOf("DESCONTO INFLUENCIADOR (%)");
-
+  
   for (let i = 1; i < rows.length; i++) {
-    if (rows[i][cIdx] && rows[i][cIdx].toLowerCase() === codigo) {
+    if (rows[i][7] && rows[i][7].toLowerCase() === cod) {
       return {
-        nome: rows[i][nIdx] || "",
-        cupom: rows[i][cupIdx] || "",
-        descInf: parseFloat(rows[i][dInfIdx]) || 5,
-        abaVisitas: VISITAS_PREFIX + (rows[i][nIdx] || "")
+        nome: rows[i][0] || "",
+        cupom: rows[i][1] || "",
+        descInf: parseFloat(rows[i][9]) || 5,
+        aba: "📍 " + (rows[i][0] || "")
       };
     }
   }
   return null;
 }
 
-function handleLogout() {
-  document.getElementById("dashboard").style.display = "none";
-  document.getElementById("login-screen").style.display = "flex";
-  document.getElementById("codigo-input").value = "";
+function logout() {
+  document.getElementById("login").style.display = "flex";
+  document.getElementById("dash").style.display = "none";
+  document.getElementById("cod").value = "";
 }
 
-async function loadDashboard(inf) {
-  document.getElementById("login-screen").style.display = "none";
-  document.getElementById("dashboard").style.display = "block";
-  document.getElementById("dash-name").textContent = inf.nome;
-  document.getElementById("dash-cupom").textContent = inf.cupom;
+async function showDash(inf) {
+  document.getElementById("login").style.display = "none";
+  document.getElementById("dash").style.display = "block";
+  document.getElementById("n").textContent = inf.nome;
+  document.getElementById("c").textContent = inf.cupom;
 
   try {
-    const visitas = await fetchVisitas(inf.abaVisitas);
-    const vendas = await fetchVendas(inf.cupom);
+    const vis = await getVis(inf.aba);
+    const vend = await getVend(inf.cupom);
 
-    const vendidas = visitas.filter(v => v.status && v.status.includes("Comprou")).length;
-    const total = visitas.length;
+    const vendidas = vis.filter(v => v.status && v.status.includes("Comprou")).length;
+    const total = vis.length;
     const pct = total > 0 ? Math.round(vendidas / total * 100) : 0;
-    const totalDesc = vendas.reduce((s, v) => s + (parseFloat(v.desconto) || 0), 0);
+    const totalDesc = vend.reduce((s, v) => s + (parseFloat(v.desconto) || 0), 0);
     const comissao = totalDesc * (inf.descInf / 100);
 
-    document.getElementById("kpi-visitas").textContent = total;
-    document.getElementById("kpi-vendas").textContent = vendidas;
-    document.getElementById("kpi-conv").textContent = pct + "%";
-    document.getElementById("kpi-credito").textContent = comissao.toLocaleString('pt-BR', {style:'currency', currency:'BRL'});
+    document.getElementById("v1").textContent = total;
+    document.getElementById("v2").textContent = vendidas;
+    document.getElementById("v3").textContent = pct + "%";
+    document.getElementById("v4").textContent = comissao.toLocaleString('pt-BR', {style:'currency', currency:'BRL'});
 
     setTimeout(() => {
-      document.getElementById("conv-bar").style.width = pct + "%";
+      document.getElementById("b").style.width = pct + "%";
     }, 300);
 
-    const tl = document.getElementById("timeline");
-    tl.innerHTML = "";
-    if (visitas.length === 0) {
-      tl.innerHTML = `<div class="empty"><div class="empty-icon">🔭</div>Nenhuma indicação ainda</div>`;
+    const list = document.getElementById("list");
+    list.innerHTML = "";
+    if (vis.length === 0) {
+      list.innerHTML = `<div class="empty"><div style="font-size:32px; margin-bottom:12px; opacity:.5">🔭</div>Nenhuma indicação ainda</div>`;
       return;
     }
 
-    [...visitas].reverse().forEach((v, i) => {
-      const status = v.status.includes("Comprou") ? {label:"Comprou", cls:"won", icon:"✅"} : {label:"Não comprou", cls:"lost", icon:"❌"};
+    [...vis].reverse().forEach(v => {
+      const st = v.status.includes("Comprou") ? {l:"Comprou", c:"won", i:"✅"} : {l:"Não comprou", c:"lost", i:"❌"};
       const item = document.createElement("div");
-      item.className = "visit-item";
+      item.className = "item";
       item.innerHTML = `
-        <div class="visit-icon ${status.cls}">${status.icon}</div>
-        <div class="visit-info">
-          <div class="visit-name">${v.cliente}</div>
-          <div class="visit-meta">${v.canal} · ${v.data}</div>
+        <div class="icon ${st.c}">${st.i}</div>
+        <div class="info">
+          <div class="nome">${v.cliente}</div>
+          <div class="meta">${v.canal} · ${v.data}</div>
         </div>
-        <div class="visit-status ${status.cls}">${status.label}</div>
+        <div class="status ${st.c}">${st.l}</div>
       `;
-      tl.appendChild(item);
+      list.appendChild(item);
     });
-  } catch (err) {
-    document.getElementById("timeline").innerHTML = `<div class="empty">Erro ao carregar</div>`;
+  } catch (e) {
+    document.getElementById("list").innerHTML = `<div class="empty">Erro ao carregar</div>`;
   }
 }
 
-async function fetchVisitas(sheet) {
-  const url = `https://sheets.googleapis.com/v4/spreadsheets/${SHEET_ID}/values/${sheet}?key=${API_KEY}`;
+async function getVis(sheet) {
+  const url = `https://sheets.googleapis.com/v4/spreadsheets/${SHEET}/values/'${sheet}'?key=${KEY}`;
   const res = await fetch(url);
   if (!res.ok) return [];
   
@@ -266,22 +222,16 @@ async function fetchVisitas(sheet) {
   const rows = data.values || [];
   if (rows.length < 2) return [];
 
-  const h = rows[0];
-  const dataIdx = h.indexOf("DATA");
-  const clienteIdx = h.indexOf("NOME DO CLIENTE");
-  const canalIdx = h.indexOf("CANAL");
-  const statusIdx = h.indexOf("STATUS");
-
   return rows.slice(1).map(r => ({
-    data: r[dataIdx] || "",
-    cliente: r[clienteIdx] || "",
-    canal: r[canalIdx] || "",
-    status: r[statusIdx] || ""
+    data: r[0] || "",
+    cliente: r[2] || "",
+    canal: r[4] || "",
+    status: r[5] || ""
   })).filter(v => v.cliente);
 }
 
-async function fetchVendas(cupom) {
-  const url = `https://sheets.googleapis.com/v4/spreadsheets/${SHEET_ID}/values/${VENDAS_SHEET}?key=${API_KEY}`;
+async function getVend(cupom) {
+  const url = `https://sheets.googleapis.com/v4/spreadsheets/${SHEET}/values/'📋 Vendas'?key=${KEY}`;
   const res = await fetch(url);
   if (!res.ok) return [];
   
@@ -289,23 +239,15 @@ async function fetchVendas(cupom) {
   const rows = data.values || [];
   if (rows.length < 2) return [];
 
-  const h = rows[0];
-  const cupomIdx = h.indexOf("CUPOM USADO");
-  const descontoIdx = h.indexOf("DESCONTO 10% (R$)");
-
-  return rows.slice(1).filter(r => r[cupomIdx] === cupom).map(r => ({
-    desconto: r[descontoIdx] || 0
+  return rows.slice(1).filter(r => r[0] === cupom).map(r => ({
+    desconto: r[4] || 0
   }));
 }
 
-function showError(msg) {
-  const err = document.getElementById("error-msg");
-  err.textContent = msg;
-  err.classList.add("show");
-}
-
-function clearError() {
-  document.getElementById("error-msg").classList.remove("show");
+function err(msg) {
+  const e = document.getElementById("err");
+  e.textContent = msg;
+  e.classList.add("show");
 }
 </script>
 </body>
