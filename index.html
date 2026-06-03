@@ -216,6 +216,9 @@ async function loadDash(inf) {
     else if (v.status === "Negociando" || v.status === "Negociação") st = {l:"Negociando", c:"neg", i:"🔄"};
     else st = {l:"Não comprou", c:"lost", i:"❌"};
 
+    const pago = v.pago && v.pago.toString().toUpperCase() === "SIM";
+    const pagoBadge = pago ? `<div style="font-size:10px;color:#2ECC71;margin-top:3px">✓ Pago ${v.comissao.toLocaleString('pt-BR',{style:'currency',currency:'BRL'})}</div>` : "";
+
     const el = document.createElement("div");
     el.className = "item";
     el.innerHTML = `
@@ -223,6 +226,7 @@ async function loadDash(inf) {
       <div class="item-info">
         <div class="item-name">${v.cliente}</div>
         <div class="item-meta">${v.data}</div>
+        ${pagoBadge}
       </div>
       <div class="item-status ${st.c}">${st.l}</div>
     `;
