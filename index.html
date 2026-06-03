@@ -239,7 +239,7 @@ async function getVend(cupom) {
   const rows = data.values || [];
   if (rows.length < 2) return [];
 
-  return rows.slice(1).filter(r => r[0] === cupom).map(r => ({
+  return rows.slice(1).filter(r => r[1] && r[1].toUpperCase() === cupom.toUpperCase()).map(r => ({
     desconto: r[4] || 0
   }));
 }
