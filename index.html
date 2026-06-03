@@ -217,7 +217,7 @@ async function loadDash(inf) {
     else st = {l:"Não comprou", c:"lost", i:"❌"};
 
     const pago = v.pago && v.pago.toString().toUpperCase() === "SIM";
-    const pagoBadge = pago ? `<div style="font-size:10px;color:#2ECC71;margin-top:3px">✓ Pago ${v.comissao.toLocaleString('pt-BR',{style:'currency',currency:'BRL'})}</div>` : "";
+    const pagoBadge = pago ? `<div style="font-size:10px;color:#2ECC71;margin-top:3px">✓ Pago ${v.comissao.toLocaleString('pt-BR',{style:'currency',currency:'BRL'})} em ${v.dataPag}</div>` : "";
 
     const el = document.createElement("div");
     el.className = "item";
@@ -253,7 +253,8 @@ async function getVendas(nome) {
         cliente: r[2] || "",
         status: r[4] || "",
         comissao: parseFloat((r[8] || "0").toString().replace("R$","").replace(".","").replace(",",".").trim()) || 0,
-        pago: r[9] || "NÃO"
+        pago: r[9] || "NÃO",
+        dataPag: r[10] || ""
       }))
       .filter(v => v.cliente);
   } catch(e) {
