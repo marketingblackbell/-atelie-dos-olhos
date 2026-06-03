@@ -45,7 +45,7 @@ input:focus{border-color:var(--gold)}
 .bar{margin-top:12px;background:var(--card2);border-radius:100px;height:8px;overflow:hidden}
 .bar-fill{height:100%;border-radius:100px;background:linear-gradient(90deg,var(--gold),var(--green));transition:width 1.2s}
 .timeline-title{font-size:10px;letter-spacing:3px;text-transform:uppercase;color:var(--gold);margin:24px 0 12px}
-.timeline{display:flex;flex-direction:column;gap:8px}
+.timeline{display:flex;flex-direction:column;gap:8px;padding-bottom:40px}
 .item{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:14px 16px;display:flex;gap:12px;align-items:center}
 .icon{width:36px;height:36px;border-radius:10px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:16px}
 .icon.won{background:rgba(46,204,113,.15)}
@@ -90,7 +90,6 @@ input:focus{border-color:var(--gold)}
       </div>
       <button class="exit-btn" onclick="logout()">Sair</button>
     </div>
-
     <div class="kpi-grid">
       <div class="kpi-card">
         <div class="kpi-label">Indicações</div>
@@ -113,7 +112,6 @@ input:focus{border-color:var(--gold)}
         <div class="kpi-sub">em comissão</div>
       </div>
     </div>
-
     <div class="timeline-title">Histórico</div>
     <div class="timeline" id="list"></div>
   </div>
@@ -123,46 +121,46 @@ input:focus{border-color:var(--gold)}
 const SHEET = "1So-Tr9n_wvTTbaxC-mf_CAaJmmO1yi5RLBfysXe6zDY";
 const KEY = "AIzaSyCtO6Bw_kNH8g_OlrZgq7aTfTbrEftCujo";
 
+// Aba Influenciadores: A=NOME, B=CUPOM, C=DESCONTO, D=CONTATO, E=CANAIS, F=STATUS, G=PAGO, H=CÓDIGO, I=DESC_CLIENTE, J=DESC_INF
+// índices: 0=NOME, 1=CUPOM, 7=CÓDIGO, 9=DESC_INF
+
+// Aba Zulai: A(vazia), B=DATA, C=CUPOM, D=NOME_CLIENTE, E=CONTATO, F=CANAL, G=STATUS
+// índices: 0=vazia, 1=DATA, 2=CUPOM, 3=NOME_CLIENTE, 4=CONTATO, 5=CANAL, 6=STATUS
+
+// Aba Vendas: A(vazia), B=DATA, C=CUPOM_USADO, D=NOME_CLIENTE, E=VALOR, F=DESCONTO, G=CANAL, H=PAGO
+// índices: 0=vazia, 1=DATA, 2=CUPOM_USADO, 3=NOME, 4=VALOR, 5=DESCONTO
+
 document.getElementById("cod").addEventListener("keypress", e => {
   if (e.key === "Enter") login();
 });
 
 async function login() {
   const code = document.getElementById("cod").value.trim().toLowerCase();
-  if (!code) {
-    showErr("Digite seu código");
-    return;
-  }
-
+  if (!code) { showErr("Digite seu código"); return; }
   try {
     const inf = await findInf(code);
-    if (!inf) {
-      showErr("Código não encontrado");
-      return;
-    }
+    if (!inf) { showErr("Código não encontrado"); return; }
     await loadDash(inf);
-  } catch (e) {
+  } catch(e) {
     console.error(e);
     showErr("Erro ao carregar");
   }
 }
 
 async function findInf(code) {
-  const url = `https://sheets.googleapis.com/v4/spreadsheets/${SHEET}/values/'👤%20Influenciadores'?key=${KEY}`;
+  const url = `https://sheets.googleapis.com/v4/spreadsheets/${SHEET}/values/%F0%9F%91%A4%20Influenciadores?key=${KEY}`;
   const res = await fetch(url);
   if (!res.ok) return null;
-  
   const data = await res.json();
   const rows = data.values || [];
-  
   for (let i = 1; i < rows.length; i++) {
     const row = rows[i];
-    if (row[7] && row[7].toLowerCase() === code) {
+    // H=índice 7 é o CÓDIGO
+    if (row[7] && row[7].toString().toLowerCase() === code) {
       return {
         nome: row[0] || "",
         cupom: row[1] || "",
-        descInf: parseFloat(row[9]) || 5,
-        abaVis: "📍%20" + encodeURIComponent(row[0] || "")
+        descInf: parseFloat(row[9]) || 5
       };
     }
   }
@@ -181,89 +179,83 @@ async function loadDash(inf) {
   document.getElementById("name").textContent = inf.nome;
   document.getElementById("cupom").textContent = inf.cupom;
 
-  try {
-    const vis = await getVis(inf.abaVis);
-    const vend = await getVend(inf.cupom);
+  const vis = await getVis(inf.nome);
+  const vend = await getVend(inf.cupom);
 
-    const vendidas = vis.filter(v => v.status && v.status.includes("Comprou")).length;
-    const total = vis.length;
-    const pct = total > 0 ? Math.round(vendidas / total * 100) : 0;
-    const desc = vend.reduce((s, v) => s + v.desc, 0);
-    const com = desc * (inf.descInf / 100);
+  const vendidas = vis.filter(v => v.status === "Comprou").length;
+  const total = vis.length;
+  const pct = total > 0 ? Math.round(vendidas / total * 100) : 0;
+  const totalDesc = vend.reduce((s, v) => s + v.desc, 0);
+  const comissao = totalDesc * (inf.descInf / 100);
 
-    document.getElementById("v-ind").textContent = total;
-    document.getElementById("v-vend").textContent = vendidas;
-    document.getElementById("v-conv").textContent = pct + "%";
-    document.getElementById("v-cred").textContent = com.toLocaleString('pt-BR', {style:'currency', currency:'BRL'});
+  document.getElementById("v-ind").textContent = total;
+  document.getElementById("v-vend").textContent = vendidas;
+  document.getElementById("v-conv").textContent = pct + "%";
+  document.getElementById("v-cred").textContent = comissao.toLocaleString('pt-BR', {style:'currency', currency:'BRL'});
+  setTimeout(() => { document.getElementById("bar").style.width = pct + "%"; }, 100);
 
-    setTimeout(() => {
-      document.getElementById("bar").style.width = pct + "%";
-    }, 100);
-
-    const list = document.getElementById("list");
-    list.innerHTML = "";
-    if (vis.length === 0) {
-      list.innerHTML = `<div class="empty">Nenhuma indicação ainda</div>`;
-      return;
-    }
-
-    [...vis].reverse().forEach(v => {
-      const st = v.status.includes("Comprou") ? {l:"Comprou",c:"won",i:"✅"} : {l:"Não comprou",c:"lost",i:"❌"};
-      const el = document.createElement("div");
-      el.className = "item";
-      el.innerHTML = `
-        <div class="icon ${st.c}">${st.i}</div>
-        <div class="item-info">
-          <div class="item-name">${v.cliente}</div>
-          <div class="item-meta">${v.canal} · ${v.data}</div>
-        </div>
-        <div class="item-status ${st.c}">${st.l}</div>
-      `;
-      list.appendChild(el);
-    });
-  } catch (e) {
-    console.error(e);
-    document.getElementById("list").innerHTML = `<div class="empty">Erro ao carregar</div>`;
+  const list = document.getElementById("list");
+  list.innerHTML = "";
+  if (vis.length === 0) {
+    list.innerHTML = `<div class="empty">Nenhuma indicação ainda</div>`;
+    return;
   }
+  [...vis].reverse().forEach(v => {
+    const won = v.status === "Comprou";
+    const st = won ? {l:"Comprou",c:"won",i:"✅"} : {l:"Não comprou",c:"lost",i:"❌"};
+    const el = document.createElement("div");
+    el.className = "item";
+    el.innerHTML = `
+      <div class="icon ${st.c}">${st.i}</div>
+      <div class="item-info">
+        <div class="item-name">${v.cliente}</div>
+        <div class="item-meta">${v.canal} · ${v.data}</div>
+      </div>
+      <div class="item-status ${st.c}">${st.l}</div>
+    `;
+    list.appendChild(el);
+  });
 }
 
-async function getVis(sheet) {
-  const url = `https://sheets.googleapis.com/v4/spreadsheets/${SHEET}/values/'${sheet}'?key=${KEY}`;
+async function getVis(nome) {
+  // Nome da aba é "📍 Zulai" — usando encode correto
+  const abaName = encodeURIComponent("📍 " + nome);
+  const url = `https://sheets.googleapis.com/v4/spreadsheets/${SHEET}/values/${abaName}?key=${KEY}`;
   try {
     const res = await fetch(url);
     if (!res.ok) return [];
     const data = await res.json();
     const rows = data.values || [];
-    if (rows.length < 2) return [];
-    return rows.slice(1).map(r => ({
-      data: r[0] || "",
-      cliente: r[2] || "",
-      canal: r[4] || "",
-      status: r[5] || ""
+    if (rows.length < 3) return [];
+    // Linha 1 = título, Linha 2 = cabeçalho, Linha 3+ = dados
+    // Colunas: A(0)=vazia, B(1)=DATA, C(2)=CUPOM, D(3)=NOME_CLIENTE, E(4)=CONTATO, F(5)=CANAL, G(6)=STATUS
+    return rows.slice(2).map(r => ({
+      data: r[1] || "",
+      cliente: r[3] || "",
+      canal: r[5] || "",
+      status: r[6] || ""
     })).filter(v => v.cliente);
-  } catch (e) {
-    console.error(e);
+  } catch(e) {
+    console.error("Erro visitas:", e);
     return [];
   }
 }
 
 async function getVend(cupom) {
-  const url = `https://sheets.googleapis.com/v4/spreadsheets/${SHEET}/values/'📋%20Vendas'?key=${KEY}`;
+  const url = `https://sheets.googleapis.com/v4/spreadsheets/${SHEET}/values/%F0%9F%93%8B%20Vendas?key=${KEY}`;
   try {
     const res = await fetch(url);
     if (!res.ok) return [];
     const data = await res.json();
     const rows = data.values || [];
-    if (rows.length < 2) return [];
-    console.log("Procurando cupom:", cupom);
-    console.log("Vendas na planilha:", rows.slice(1).map(r => r[1]));
-    return rows.slice(1)
-      .filter(r => r[1] && r[1].toString().trim() === cupom.toString().trim())
-      .map(r => ({
-        desc: parseFloat(r[4]) || 0
-      }));
-  } catch (e) {
-    console.error(e);
+    if (rows.length < 3) return [];
+    // Linha 1 = título, Linha 2 = cabeçalho, Linha 3+ = dados
+    // Colunas: A(0)=vazia, B(1)=DATA, C(2)=CUPOM_USADO, D(3)=NOME, E(4)=VALOR, F(5)=DESCONTO
+    return rows.slice(2)
+      .filter(r => r[2] && r[2].toString().trim() === cupom.toString().trim())
+      .map(r => ({ desc: parseFloat(r[5]) || 0 }));
+  } catch(e) {
+    console.error("Erro vendas:", e);
     return [];
   }
 }
