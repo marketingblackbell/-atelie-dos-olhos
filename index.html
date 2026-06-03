@@ -234,7 +234,7 @@ async function getVendas(nome) {
   // Aba Vendas: linha1=título, linha2=cabeçalho, linha3+=dados
   // A=DATA, B=INFLUENCIADOR, C=NOME CLIENTE, D=CONTATO, E=STATUS
   // F=VALOR, G=DESCONTO(R$), H=VALOR FINAL, I=COMISSÃO(R$), J=PAGO, K=DATA PAG
-  const url = `https://sheets.googleapis.com/v4/spreadsheets/${SHEET}/values/${encodeURIComponent('Vendas')}?key=${KEY}`;
+  const url = `https://sheets.googleapis.com/v4/spreadsheets/${SHEET}/values/${encodeURIComponent('📋 Vendas')}?key=${KEY}`;
   try {
     const res = await fetch(url);
     if (!res.ok) return [];
