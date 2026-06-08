@@ -218,7 +218,7 @@ async function loadDash(inf) {
 
     const pago = v.pago && v.pago.toString().toUpperCase() === "SIM";
     const comprouVenda = v.status === "Comprou";
-    const dataMostrar = pago && comprouVenda && v.dataPag ? v.dataPag : v.data;
+    const dataMostrar = v.data;
     const pagoBadge = pago && comprouVenda
       ? `<div style="font-size:10px;color:#2ECC71;margin-top:3px">✓ Pago ${v.comissao.toLocaleString('pt-BR',{style:'currency',currency:'BRL'})}${v.dataPag ? ' em ' + v.dataPag : ''}</div>`
       : "";
