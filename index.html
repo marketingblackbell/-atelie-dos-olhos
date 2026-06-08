@@ -188,9 +188,9 @@ async function loadDash(inf) {
   // TAXA
   const pct = total > 0 ? Math.round(comprou / total * 100) : 0;
 
-  // CRÉDITO = soma comissão onde PAGO = "NÃO"
+  // CRÉDITO = soma comissão onde STATUS = "Comprou" E PAGO = "NÃO"
   const credito = vendas
-    .filter(v => v.pago && v.pago.toString().toUpperCase() === "NÃO")
+    .filter(v => v.status === "Comprou" && v.pago && v.pago.toString().toUpperCase() === "NÃO")
     .reduce((s, v) => s + v.comissao, 0);
 
   document.getElementById("v-ind").textContent = total;
@@ -213,11 +213,15 @@ async function loadDash(inf) {
   [...vendas].reverse().forEach(v => {
     let st;
     if (v.status === "Comprou") st = {l:"Comprou", c:"won", i:"✅"};
-    else if (v.status === "Negociando" || v.status === "Negociação") st = {l:"Negociando", c:"neg", i:"🔄"};
+    else if (v.status === "Negociando" || v.status === "Negociação" || v.status === "Negoiando") st = {l:"Negociando", c:"neg", i:"🔄"};
     else st = {l:"Não comprou", c:"lost", i:"❌"};
 
     const pago = v.pago && v.pago.toString().toUpperCase() === "SIM";
-    const pagoBadge = pago ? `<div style="font-size:10px;color:#2ECC71;margin-top:3px">✓ Pago ${v.comissao.toLocaleString('pt-BR',{style:'currency',currency:'BRL'})} em ${v.dataPag}</div>` : "";
+    const comprouVenda = v.status === "Comprou";
+    const dataMostrar = pago && comprouVenda && v.dataPag ? v.dataPag : v.data;
+    const pagoBadge = pago && comprouVenda
+      ? `<div style="font-size:10px;color:#2ECC71;margin-top:3px">✓ Pago ${v.comissao.toLocaleString('pt-BR',{style:'currency',currency:'BRL'})}${v.dataPag ? ' em ' + v.dataPag : ''}</div>`
+      : "";
 
     const el = document.createElement("div");
     el.className = "item";
@@ -225,7 +229,7 @@ async function loadDash(inf) {
       <div class="icon ${st.c}">${st.i}</div>
       <div class="item-info">
         <div class="item-name">${v.cliente}</div>
-        <div class="item-meta">${v.data}</div>
+        <div class="item-meta">${dataMostrar}</div>
         ${pagoBadge}
       </div>
       <div class="item-status ${st.c}">${st.l}</div>
